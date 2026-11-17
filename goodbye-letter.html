@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>See You Soon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Parisienne&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg1:#141a45; --bg2:#2d3a86; --ink:#2b2a5c;
+  --blue:#6f7fc4; --blue-2:#8798dd; --blue-3:#9aa9e6; --paper:#f6f5ff; --gold:#f2c14e;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg1:#0c1030; --bg2:#222c70; } }
+:root[data-theme="dark"]{ --bg1:#0c1030; --bg2:#222c70; }
+html{ scroll-padding-top:env(safe-area-inset-top,0px); }
+*,*::before,*::after{ box-sizing:border-box; }
+body{
+  margin:0; min-height:100vh; color:var(--ink); overflow-x:hidden;
+  font-family:"Caveat","Segoe Script","Comic Sans MS",cursive;
+  background-color:var(--bg1);
+  background-image:
+    radial-gradient(1.5px 1.5px at 12% 18%,#fff,transparent),
+    radial-gradient(1.5px 1.5px at 78% 10%,#fff,transparent),
+    radial-gradient(2px 2px at 40% 32%,#cfd6ff,transparent),
+    radial-gradient(1.5px 1.5px at 90% 44%,#fff,transparent),
+    radial-gradient(1.5px 1.5px at 22% 70%,#cfd6ff,transparent),
+    radial-gradient(2px 2px at 64% 82%,#fff,transparent),
+    radial-gradient(1.5px 1.5px at 6% 90%,#fff,transparent),
+    radial-gradient(ellipse at 50% 15%, var(--bg2), var(--bg1) 75%);
+  background-attachment:fixed;
+}
+.stage{ min-height:100vh; display:grid; place-items:center; padding:28px 16px; }
+
+/* ---------- Envelope ---------- */
+.env-wrap{ text-align:center; transition:opacity .6s, transform .6s; }
+.env-wrap.leave{ opacity:0; transform:translateY(60px) scale(.9); }
+.envelope{
+  position:relative; display:block; width:min(80vw,330px); aspect-ratio:3/2; margin:0 auto;
+  border:0; padding:0; background:none; cursor:pointer; perspective:900px;
+  filter:drop-shadow(0 18px 24px rgba(0,0,0,.45));
+  animation:bob 3.4s ease-in-out infinite;
+}
+.envelope:focus-visible{ outline:3px solid var(--gold); outline-offset:8px; border-radius:6px; }
+.envelope.open{ animation:none; }
+@keyframes bob{ 50%{ transform:translateY(-8px); } }
+.envelope span{ position:absolute; inset:0; display:block; }
+.back{ background:var(--blue); border-radius:6px; z-index:0; }
+.peek{ inset:6% 8% auto 8% !important; height:80%; background:var(--paper); border-radius:4px; z-index:1;
+  transition:transform .8s ease .4s; }
+.open .peek{ transform:translateY(-42%); }
+.fl{ clip-path:polygon(0 0,52% 52%,0 100%); background:var(--blue-2); z-index:2; }
+.fr{ clip-path:polygon(100% 0,48% 52%,100% 100%); background:var(--blue-2); z-index:2; }
+.fb{ clip-path:polygon(0 100%,50% 44%,100% 100%); background:var(--blue-3); z-index:2; }
+.flap{
+  inset:0 0 auto 0 !important; height:58%; background:#7d8ee0; z-index:4;
+  clip-path:polygon(0 0,100% 0,50% 100%); transform-origin:top;
+  transition:transform .8s ease, z-index 0s .4s, background .8s;
+}
+.open .flap{ transform:rotateX(180deg); z-index:0; background:#6272b8; }
+.seal{
+  inset:auto !important; left:50%; top:58%; width:46px; height:46px; margin:-23px 0 0 -23px;
+  display:grid !important; place-items:center; border-radius:50%; z-index:5;
+  background:radial-gradient(circle at 35% 30%, #ffe08a, var(--gold) 60%, #c98f2b);
+  color:#b3123f; font-size:24px; line-height:1; box-shadow:0 2px 6px rgba(0,0,0,.3);
+  transition:opacity .3s, transform .3s;
+}
+.open .seal{ opacity:0; transform:scale(.4); }
+.hint{ margin:26px 0 0; font-size:1.7rem; color:#d9defa; letter-spacing:.02em; }
+
+/* ---------- Scroll ---------- */
+.scroll{ position:relative; width:min(92vw,440px); margin:0 auto; }
+.scroll[hidden]{ display:none; }
+.rod{
+  position:relative; z-index:3; height:26px; margin:0 -12px; border-radius:13px;
+  background:linear-gradient(#f9db8e,#c98f2b 55%,#f2c14e); box-shadow:0 5px 12px rgba(0,0,0,.4);
+}
+.rod::before,.rod::after{
+  content:""; position:absolute; top:-6px; width:22px; height:38px; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #ffe9a8, #c98f2b);
+}
+.rod::before{ left:-8px; } .rod::after{ right:-8px; }
+.paper{
+  position:relative; height:0; margin:0 4px; overflow:hidden; background:var(--paper);
+  transition:height 1.8s cubic-bezier(.45,.05,.2,1);
+  box-shadow:0 12px 30px rgba(0,0,0,.4);
+}
+.paper::before,.paper::after{ content:""; position:absolute; left:0; right:0; height:22px; z-index:2; pointer-events:none; }
+.paper::before{ top:0; background:linear-gradient(rgba(43,42,92,.22),transparent); }
+.paper::after{ bottom:0; background:linear-gradient(transparent,rgba(43,42,92,.22)); }
+.inner{ position:relative; padding:44px 30px 48px; text-align:center; }
+.inner::before{
+  content:""; position:absolute; inset:12px; border:2px dashed var(--blue-2); border-radius:8px; opacity:.7; pointer-events:none;
+}
+.party{ font-size:1.8rem; letter-spacing:.3em; margin:0; }
+h1{
+  margin:10px 0 2px; font-family:"Parisienne","Brush Script MT",cursive; font-weight:400;
+  font-size:clamp(2.8rem,12vw,3.8rem); line-height:1.05; color:#4b56b0; text-shadow:2px 2px 0 #d9defa;
+}
+.sub{ margin:0 0 14px; font-size:1.5rem; color:#6b6fa8; }
+.count{
+  display:inline-block; margin:0 0 18px; padding:4px 18px; border-radius:999px;
+  background:#e6e9ff; border:1.5px solid var(--blue-2); font-size:1.5rem; font-weight:600; color:#3a43a0;
+}
+.count[hidden]{ display:none; }
+.to{ margin:0 0 14px; font-size:1.9rem; font-weight:600; }
+.body{
+  text-align:left; font-size:1.55rem; line-height:36px; font-weight:500;
+  background:repeating-linear-gradient(transparent 0 35px, rgba(135,152,221,.3) 35px 36px);
+}
+.body p{ margin:0 0 36px; }
+.sign{ margin:6px 0 0; font-size:1.9rem; font-weight:600; text-align:right; }
+.sign span{ display:block; font-family:"Parisienne","Brush Script MT",cursive; font-size:2.2rem; color:#4b56b0; }
+.again{
+  display:block; margin:28px auto 0; padding:10px 22px; border:2px solid #d9defa; border-radius:999px;
+  background:transparent; color:#d9defa; font:inherit; font-size:1.4rem; cursor:pointer;
+}
+.again:hover{ background:rgba(217,222,250,.14); }
+.again:focus-visible{ outline:3px solid var(--gold); outline-offset:4px; }
+
+/* ---------- Falling emoji ---------- */
+#fx{ position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:20; }
+.fall{
+  position:absolute; top:0; left:var(--x); font-size:var(--s); line-height:1; will-change:transform;
+  animation:fall var(--d) linear both;
+}
+@keyframes fall{
+  from{ transform:translate3d(0,-12vh,0) rotate(0); opacity:1; }
+  90%{ opacity:1; }
+  to{ transform:translate3d(var(--dx),108vh,0) rotate(var(--r)); opacity:.9; }
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; }
+}
+</style>
+</head>
+<body>
+<main class="stage">
+  <div id="envWrap" class="env-wrap">
+    <button id="envelope" class="envelope" type="button" aria-label="Open your letter">
+      <span class="back"></span>
+      <span class="peek"></span>
+      <span class="fl"></span><span class="fr"></span><span class="fb"></span>
+      <span class="flap"></span>
+      <span class="seal" aria-hidden="true"></span>
+    </button>
+    <p class="hint">Tap to open</p>
+  </div>
+
+  <section id="scroll" class="scroll" hidden aria-label="Goodbye letter">
+    <div class="rod"></div>
+    <div id="paper" class="paper">
+      <div id="inner" class="inner">
+        <p class="party" aria-hidden="true"></p>
+        <h1>Let's See Each Other Soon</h1>
+        <p class="sub">goodbye… for now.</p>
+        <p class="count" id="count" hidden></p>
+        <p class="to" id="to"></p>
+        <div class="body" id="body"></div>
+        <p class="sign" id="sign"></p>
+      </div>
+    </div>
+    <div class="rod"></div>
+    <button id="again" class="again" type="button">Roll it back up.</button>
+  </section>
+</main>
+<div id="fx" aria-hidden="true"></div>
+
+<script>
+/* ✏️ Edit your letter here */
+const LETTER = {
+  to: "Luna",
+  from: "Jumawid",
+  returnDate: [2026, 11, 22],   // year, month, day she comes back
+  returnLabel: "Nov 22",
+  paragraphs: [
+    "I am so terrible at goodbyes, so let’s call this a very short. Take lots of photos, eat good food, and rest well. You deserve every bit of it, My LOVE.",
+    "I’ll be right here playing, eating, watching movies,doing nothing,and saving up all my stories for the day you’re back :>.",
+    "Until then... remember you are loved and missed, even from far away. Safe travels, and come home soon!"
+  ]
+};
+
+const $ = id => document.getElementById(id);
+const envelope = $("envelope"), envWrap = $("envWrap"), scroll = $("scroll");
+const paper = $("paper"), inner = $("inner"), fx = $("fx");
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const HEARTS = ["💙","💜","🩵","🤍","💕","💌"];
+const SPARKLES = ["✨","⭐","🌙","🌟","🕊️"];
+let timers = [];
+
+$("to").textContent = "Dear " + LETTER.to + ",";
+LETTER.paragraphs.forEach(t => { const p = document.createElement("p"); p.textContent = t; $("body").appendChild(p); });
+$("sign").innerHTML = "Missing you already,<span></span>";
+$("sign").querySelector("span").textContent = LETTER.from + " 🤍";
+
+/* countdown to the return date */
+(function () {
+  const [y, m, d] = LETTER.returnDate;
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const days = Math.round((new Date(y, m - 1, d) - today) / 86400000);
+  const el = $("count");
+  let text = "";
+  if (days > 1) text = days + " days until " + LETTER.returnLabel + " ";
+  else if (days === 1) text = "See you tomorrow! 🤍";
+  else if (days === 0) text = "She’s back today! 🤍";
+  if (text) { el.textContent = text; el.hidden = false; }
+})();
+
+const rand = (a, b) => a + Math.random() * (b - a);
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+
+function spawn(list, delay = 0) {
+  if (reduce || fx.childElementCount > 60) return;
+  const el = document.createElement("span");
+  el.className = "fall";
+  el.textContent = pick(list);
+  el.style.setProperty("--x", rand(0, 96) + "vw");
+  el.style.setProperty("--s", rand(18, 34) + "px");
+  el.style.setProperty("--d", rand(7, 12) + "s");
+  el.style.setProperty("--dx", rand(-14, 14) + "vw");
+  el.style.setProperty("--r", rand(-240, 240) + "deg");
+  el.style.animationDelay = delay + "s";
+  fx.appendChild(el);
+  el.addEventListener("animationend", () => el.remove());
+}
+
+function startFx() {
+  for (let i = 0; i < 22; i++) spawn(i % 2 ? HEARTS : SPARKLES, rand(0, 2));
+  timers.push(setInterval(() => spawn(HEARTS), 600));
+  timers.push(setInterval(() => spawn(SPARKLES), 900));
+}
+function stopFx() { timers.forEach(clearInterval); timers = []; fx.innerHTML = ""; }
+
+function openLetter() {
+  if (envelope.classList.contains("open")) return;
+  envelope.classList.add("open");
+  setTimeout(() => envWrap.classList.add("leave"), 1400);
+  setTimeout(() => {
+    envWrap.style.display = "none";
+    scroll.hidden = false;
+    paper.style.height = "0px";
+    void paper.offsetHeight;
+    paper.style.height = inner.scrollHeight + "px";
+    startFx();
+    setTimeout(() => { paper.style.height = "auto"; }, 1900);
+  }, 2000);
+}
+
+function closeLetter() {
+  paper.style.height = paper.offsetHeight + "px";
+  void paper.offsetHeight;
+  paper.style.height = "0px";
+  stopFx();
+  setTimeout(() => {
+    scroll.hidden = true;
+    envelope.classList.remove("open");
+    envWrap.classList.remove("leave");
+    envWrap.style.display = "";
+    envelope.focus();
+  }, 1900);
+}
+
+envelope.addEventListener("click", openLetter);
+$("again").addEventListener("click", closeLetter);
+</script>
+</body>
+</html>
